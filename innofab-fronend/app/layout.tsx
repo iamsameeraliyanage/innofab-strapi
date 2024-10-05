@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Manrope } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import NavBar from "@/components/NavBar/NavBar";
 
 const fontSans = Manrope({
   subsets: ["latin"],
@@ -25,7 +27,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${fontSans.variable} antialiased`}>{children}</body>
+      <body className={`${fontSans.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NavBar />
+          <div>{children}</div>
+          {/* <Footer /> */}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
