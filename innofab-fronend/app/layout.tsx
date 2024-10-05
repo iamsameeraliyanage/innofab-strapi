@@ -18,7 +18,6 @@ export const metadata: Metadata = {
     "Innofab is a leading digital agency offering expert consulting, innovative code solutions through CodeLab, and comprehensive training via Innofab Academy. We help businesses thrive in the digital age.",
   keywords:
     "Innofab, Digital Agency, CodeLab, Innofab Academy, Consulting, Web Development, Mobile Applications, Digital Transformation",
-  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({

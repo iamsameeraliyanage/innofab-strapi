@@ -3,59 +3,61 @@ import React from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import Image from "next/image";
+import { getStrapiURL } from "@/utils/utils";
+import qs from "qs";
+import { StrapiImage } from "../StrapiImage/StrapiImage";
 
-const navBarData: NavbarData = {
-  id: 1,
-  title: "Global Setting Page",
-  description: "Responsible for global website settings.",
-  createdAt: "2024-05-20T16:59:58.446Z",
-  updatedAt: "2024-05-21T05:03:11.112Z",
-  publishedAt: "2024-05-20T16:59:59.488Z",
-  topnav: {
-    id: 1,
-    logoLink: {
-      id: 1,
-      text: "Innofab",
-      href: "/",
-      image: {
-        id: 1,
-        url: "/img/innofab-logo.svg",
-        alternativeText: null,
-        name: "innofab-logo",
+async function loader() {
+  const { fetchData } = await import("@/services/services");
+
+  const path = "/api/global";
+  const baseUrl = getStrapiURL();
+  const query = qs.stringify({
+    populate: {
+      topnav: {
+        populate: {
+          logoLink: {
+            populate: {
+              image: {
+                fields: ["url", "alternativeText", "name"],
+              },
+            },
+          },
+          link: {
+            populate: true,
+          },
+        },
       },
     },
-    link: [
-      { id: 1, href: "/", text: "Home", external: false },
-      { id: 3, href: "/features", text: "Features", external: false },
-      { id: 4, href: "/pricing", text: "Pricing", external: false },
-      { id: 5, href: "/company", text: "Company", external: false },
-      { id: 2, href: "/blog", text: "Blog", external: false },
-    ],
-    cta: {
-      id: 6,
-      href: "#",
-      text: "Get Started",
-      external: true,
-    },
-  },
-  meta: {},
-};
+  });
 
-const NavBar = () => {
-  const data = navBarData;
-  if (!data) return null;
-  const navData = data.topnav.link;
-  const logoData = data.topnav.logoLink;
+  const url = new URL(path, baseUrl);
+  url.search = query;
+
+  const data = await fetchData(url.href);
+
+  return data;
+}
+
+const NavBar = async () => {
+  const navbarData: NavbarData = await loader();
+  if (!navbarData) return null;
+
+  const topNavData = navbarData.topnav;
+  const navData = topNavData.link;
 
   return (
     <div className="w-full">
       <nav className="container relative flex flex-wrap items-center justify-between p-8 mx-auto lg:justify-between xl:px-0">
         {/* Logo  */}
 
-        <Link href="/" legacyBehavior passHref>
-          <Image
-            src={logoData.image.url}
-            alt={logoData.image.alternativeText || logoData.image.name}
+        <Link href="/" className="block">
+          <StrapiImage
+            src={topNavData.logoLink.image.url}
+            alt={
+              topNavData.logoLink.image.alternativeText ||
+              topNavData.logoLink.image.name
+            }
             width={150}
             height={80}
           />
@@ -91,39 +93,42 @@ const NavBar = () => {
 };
 
 export default NavBar;
+interface LogoImage {
+  id: number;
+  documentId: string;
+  url: string;
+  alternativeText: string | null;
+  name: string;
+}
+
+interface LogoLink {
+  id: number;
+  text: string;
+  href: string;
+  image: LogoImage;
+}
+
+interface Link {
+  id: number;
+  href: string;
+  text: string;
+  external: boolean;
+}
+
+interface TopNav {
+  id: number;
+  logoLink: LogoLink;
+  link: Link[];
+}
 
 interface NavbarData {
   id: number;
+  documentId: string;
   title: string;
   description: string;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-  topnav: {
-    id: number;
-    logoLink: {
-      id: number;
-      text: string;
-      href: string;
-      image: {
-        id: number;
-        url: string;
-        alternativeText: string | null;
-        name: string;
-      };
-    };
-    link: {
-      id: number;
-      href: string;
-      text: string;
-      external: boolean;
-    }[];
-    cta: {
-      id: number;
-      href: string;
-      text: string;
-      external: boolean;
-    };
-  };
-  meta: Record<string, any>;
+  locale: string | null;
+  topnav: TopNav;
 }
