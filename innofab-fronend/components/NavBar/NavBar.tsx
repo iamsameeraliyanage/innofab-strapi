@@ -9,8 +9,19 @@ import Link from "next/link";
 import React from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import Image from "next/image";
 
 const NavBar = () => {
+  const logoLink = {
+    text: "Innofab",
+    href: "/",
+    image: {
+      id: 1,
+      url: "/img/innofab-logo.svg",
+      alternativeText: null,
+      name: "innofab-logo",
+    },
+  };
   return (
     <NavigationMenu className="justify-between w-full max-w-full py-2 px-4">
       <NavigationMenuList>
@@ -18,7 +29,12 @@ const NavBar = () => {
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className="text-xl font-bold">
-              Logo
+              <Image
+                src={logoLink.image.url}
+                alt={logoLink.image.alternativeText || logoLink.image.name}
+                width={200}
+                height={100}
+              />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

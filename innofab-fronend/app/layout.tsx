@@ -3,6 +3,7 @@ import "./globals.css";
 import { Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavBar from "@/components/NavBar/NavBar";
+import { Footer } from "@/components/Footer/Footer";
 
 const fontSans = Manrope({
   subsets: ["latin"],
@@ -36,7 +37,7 @@ export default function RootLayout({
         >
           <NavBar />
           <div>{children}</div>
-          {/* <Footer /> */}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
